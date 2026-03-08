@@ -14,7 +14,7 @@
             --hueso: #f2ede5;
         }
         body {
-            background: var(--vino);
+            background: var(--hueso);
             margin: 0;
             padding: 0;
             min-height: 100vh;
@@ -33,16 +33,16 @@
             padding: 24px 0;
         }
         .envelope-closed {
-            background: var(--hueso);
-            color: var(--vino);
+            background: var(--vino);
+            color: #fff;
             text-align: center;
             padding: 52px 36px 48px;
             border-radius: 4px;
-            box-shadow: 0 16px 48px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.4);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
             position: relative;
             cursor: pointer;
             transition: transform 0.4s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(107,28,27,0.15);
+            border: 1px solid rgba(255,255,255,0.08);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -80,7 +80,7 @@
             margin: 0 auto;
             border-left: 50% solid transparent;
             border-right: 50% solid transparent;
-            border-top: 36px solid var(--hueso);
+            border-top: 36px solid var(--vino);
             pointer-events: none;
         }
         .envelope-closed::after {
@@ -90,7 +90,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            border: 2px solid rgba(107,28,27,0.12);
+            border: 2px solid rgba(255,255,255,0.1);
             border-radius: 4px;
             pointer-events: none;
         }
@@ -301,6 +301,7 @@
             margin-bottom: 24px;
             letter-spacing: 2px;
             font-style: italic;
+            color: var(--vino);
         }
         .parents-section .parents-block {
             margin-bottom: 28px;
@@ -315,12 +316,14 @@
             text-transform: uppercase;
             margin-bottom: 10px;
             font-weight: 600;
+            color: var(--vino);
         }
         .parents-section .parents-names {
             font-family: 'Helvetica', Arial, sans-serif;
             font-size: 1rem;
             line-height: 1.8;
             letter-spacing: 0.5px;
+            color: #000;
         }
         .parents-section .parents-names span {
             display: block;
@@ -350,7 +353,12 @@
             padding: 32px 24px;
             text-align: center;
         }
-        .event-section h2, .itinerary-section h2, .dresscode-section h2, .gift-section h2 {
+        .event-section h2, .itinerary-section h2, .dresscode-section h2 {
+            font-family: 'EB Garamond', 'Caslon', serif;
+            margin-bottom: 16px;
+            color: var(--vino);
+        }
+        .gift-section h2 {
             font-family: 'EB Garamond', 'Caslon', serif;
             margin-bottom: 16px;
         }
@@ -614,7 +622,7 @@
                 </div>
                 <div class="blessing-section">
                     <div class="blessing-box">
-                        <p>Con la bendición de Dios y nuestros padres,<br>tenemos el honor de invitarles a nuestra boda Civil<br></p>
+                        <p>Con la bendición de Dios y nuestros padres,<br>tenemos el honor de invitarles a nuestra Boda Civil<br></p>
                     </div>
                 </div>
                 <div class="countdown-section">
