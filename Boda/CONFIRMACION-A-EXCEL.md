@@ -81,3 +81,11 @@ function doPost(e) {
 ---
 
 Cuando alguien rellene el formulario y pulse Enviar, en la hoja se añadirá una fila con la fecha, el nombre y la cantidad. Puedes exportar la hoja a Excel cuando quieras (Archivo → Descargar → Microsoft Excel).
+
+---
+
+## Si no se guarda al enviar desde la web (pero sí en local)
+
+1. En Apps Script: **Ejecuciones** (o "Executions", en el menú izquierdo). Ahí ves si el script se ejecutó cuando enviaste desde la invitación. Si aparece un error, copia el mensaje.
+2. Comprueba que la implementación sea **"Cualquier persona"** (Anyone), no "Cualquier persona con cuenta de Google".
+3. Prueba en ventana de incógnito para evitar caché.

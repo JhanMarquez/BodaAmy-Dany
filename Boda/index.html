@@ -774,7 +774,7 @@
         <div class="modal-confirmacion">
             <button type="button" class="btn-cerrar" id="modal-cerrar" aria-label="Cerrar">&times;</button>
             <h3>Confirmar asistencia</h3>
-            <form id="form-confirmacion" method="post" target="iframe-respuesta-confirmacion">
+            <form id="form-confirmacion" method="post" action="" enctype="application/x-www-form-urlencoded" target="iframe-respuesta-confirmacion">
                 <label for="confirmar-nombre">Nombre de la persona</label>
                 <input type="text" id="confirmar-nombre" name="nombre" required placeholder="Tu nombre" autocomplete="name">
                 <label for="confirmar-cantidad">Cantidad de personas</label>
@@ -825,6 +825,9 @@
         var mensajeError = document.getElementById('mensaje-error');
         // Pega aquí la URL que te da Google al desplegar (Implementar → Aplicación web). Ejemplo: 'https://script.google.com/macros/s/AKfycbz.../exec'
         var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSFbTpTWHnDol6UaSzwf9n2XE0QmJYJNEX6LtHsR5mbXEVE1cIr310dZAJQbe7HfeeOw/exec';
+        if (formConfirmacion && GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL.indexOf('TU_ID_AQUI') === -1) {
+            formConfirmacion.action = GOOGLE_SCRIPT_URL;
+        }
 
         function abrirModal() {
             if (modal) {
