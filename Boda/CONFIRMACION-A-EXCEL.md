@@ -22,6 +22,14 @@ Si usas **Google Sheets** (gratis), en 5 minutos lo tienes guardando en una hoja
 2. Borra lo que haya y pega este código:
 
 ```javascript
+function doGet(e) {
+  e = e || {};
+  var params = e.parameter || {};
+  guardarEnHoja(params);
+  return ContentService.createTextOutput(JSON.stringify({ ok: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
 function doPost(e) {
   e = e || {};
   var params = e.parameter || {};
@@ -32,25 +40,26 @@ function doPost(e) {
       if (kv.length === 2) params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1].replace(/\+/g, ' '));
     });
   }
-  var nombre = (params.nombre || '').trim();
-  var cantidad = params.cantidad || '';
-
-  var libro = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = libro.getSheets()[0];
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(['Fecha', 'Nombre', 'Cantidad']);
-  }
-  if (nombre) {
-    sheet.appendRow([new Date(), nombre, cantidad]);
-    SpreadsheetApp.flush();
-  }
+  guardarEnHoja(params);
   return ContentService.createTextOutput(JSON.stringify({ ok: true }))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function guardarEnHoja(params) {
+  var nombre = (params.nombre || '').trim();
+  var cantidad = params.cantidad || '';
+  if (!nombre) return;
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+  if (sheet.getLastRow() === 0) sheet.appendRow(['Fecha', 'Nombre', 'Cantidad']);
+  sheet.appendRow([new Date(), nombre, cantidad]);
+  SpreadsheetApp.flush();
 }
 ```
 
 3. Guarda el proyecto (Ctrl+S). Arriba donde dice "Sin título", pon por ejemplo "Confirmaciones Boda".
 4. **Si ya tenías el script desplegado:** ve a **Implementar** → **Gestionar implementaciones** → el lápiz (Editar) de tu implementación → **Versión: Nueva versión** → **Implementar**. Así se usa el código nuevo.
+
+**Importante:** El script incluye **doGet** además de **doPost**. La invitación en GitHub Pages envía los datos por **GET** (en la URL), para que funcione bien desde la web publicada. En local puede seguir funcionando igual.
 
 ---
 

@@ -774,7 +774,7 @@
         <div class="modal-confirmacion">
             <button type="button" class="btn-cerrar" id="modal-cerrar" aria-label="Cerrar">&times;</button>
             <h3>Confirmar asistencia</h3>
-            <form id="form-confirmacion" method="post" action="" enctype="application/x-www-form-urlencoded" target="iframe-respuesta-confirmacion">
+            <form id="form-confirmacion">
                 <label for="confirmar-nombre">Nombre de la persona</label>
                 <input type="text" id="confirmar-nombre" name="nombre" required placeholder="Tu nombre" autocomplete="name">
                 <label for="confirmar-cantidad">Cantidad de personas</label>
@@ -825,9 +825,6 @@
         var mensajeError = document.getElementById('mensaje-error');
         // Pega aquí la URL que te da Google al desplegar (Implementar → Aplicación web). Ejemplo: 'https://script.google.com/macros/s/AKfycbz.../exec'
         var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSFbTpTWHnDol6UaSzwf9n2XE0QmJYJNEX6LtHsR5mbXEVE1cIr310dZAJQbe7HfeeOw/exec';
-        if (formConfirmacion && GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL.indexOf('TU_ID_AQUI') === -1) {
-            formConfirmacion.action = GOOGLE_SCRIPT_URL;
-        }
 
         function abrirModal() {
             if (modal) {
@@ -848,18 +845,20 @@
         }
         if (formConfirmacion) {
             formConfirmacion.addEventListener('submit', function(e) {
+                e.preventDefault();
                 var nombre = document.getElementById('confirmar-nombre').value.trim();
                 var cantidad = document.getElementById('confirmar-cantidad').value;
-                if (!nombre || !cantidad) { e.preventDefault(); return; }
+                if (!nombre || !cantidad) return;
                 if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.indexOf('TU_ID_AQUI') !== -1) {
-                    e.preventDefault();
                     if (mensajeError) {
                         mensajeError.textContent = 'Pon en index.html (busca GOOGLE_SCRIPT_URL) la URL de tu Apps Script. Pasos en CONFIRMACION-A-EXCEL.md.';
                         mensajeError.style.display = 'block';
                     }
                     return;
                 }
-                formConfirmacion.action = GOOGLE_SCRIPT_URL;
+                var url = GOOGLE_SCRIPT_URL + '?nombre=' + encodeURIComponent(nombre) + '&cantidad=' + encodeURIComponent(cantidad);
+                var iframe = document.getElementById('iframe-respuesta-confirmacion');
+                if (iframe) iframe.src = url;
                 formConfirmacion.classList.add('oculto');
                 if (mensajeExito) mensajeExito.classList.add('visible');
                 setTimeout(cerrarModal, 2500);
