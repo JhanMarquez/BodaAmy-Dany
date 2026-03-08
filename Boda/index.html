@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Nuestra Boda</title>
+<link rel="stylesheet" href="style.css">
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@700&family=Helvetica:wght@400&display=swap');
+        h1, h2, h3 {
+            font-family: 'EB Garamond', 'Caslon', serif;
+        }
+        body, p, a, li, input, button {
+            font-family: 'Helvetica', Arial, sans-serif;
+            font-weight: 400;
+        }
+        .card {
+            background: rgba(255,255,255,0.55);
+            /* Más claro para distinguir la imagen */
+        }
+    </style>
+</head>
+
+<body>
+
+<section class="hero" style="position: relative;">
+        <img src="IMG1.JPG" alt="Decoración boda" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.25;">
+        <div style="position: relative; z-index: 1;">
+            <h1>Amy & Daniel</h1>
+            <p>Nos Casamos</p>
+            <h2 id="countdown"></h2>
+        </div>
+    </section>
+
+<section class="info" style="position: relative;">
+    <img src="IMG2.JPG" alt="Decoración evento" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.18;">
+    <div style="position: relative; z-index: 1;">
+        <h2>Detalles del Evento</h2>
+        <div class="card" style="background: rgba(255,255,255,0.75);">
+            <h3>Ceremonia Civil</h3>
+            <p>25 abril 2026</p>
+            <p>4:00 PM</p>
+            <p>Salón Jardín Real Francisco</p>
+            <a href="#">Ver mapa</a>
+        </div>
+        <div class="card" style="background: rgba(255,255,255,0.75);">
+            <h3>Recepción</h3>
+            <p>A partir de las 3:00 PM</p>
+            <p>Salón Jardín Real Francisco</p>
+            <a href="#">Ver mapa</a>
+        </div>
+    </div>
+</section>
+
+<section class="dress">
+    <h2>Dress Code</h2>
+    <p>Formal / Elegante</p>
+    <p>Guía de colores:</p>
+    <p><strong>Mujeres:</strong> Burdeos, Terracota, Verde Oliva, Verde Musgo, Khaki</p>
+    <p><strong>Hombres:</strong> Todos los colores excepto negro</p>
+    <div style="display: flex; justify-content: center; margin-top: 10px;">
+      <div style="display: flex; gap: 16px;">
+        <div style="width: 40px; height: 40px; background: #6B1C1B; border-radius: 50%; border: 2px solid #ccc;"></div> <!-- Burdeos -->
+        <div style="width: 40px; height: 40px; background: #A44A3F; border-radius: 50%; border: 2px solid #ccc;"></div> <!-- Terracota -->
+        <div style="width: 40px; height: 40px; background: #B6A16A; border-radius: 50%; border: 2px solid #ccc;"></div> <!-- Khaki -->
+        <div style="width: 40px; height: 40px; background: #7C7A3B; border-radius: 50%; border: 2px solid #ccc;"></div> <!-- Verde musgo -->
+        <div style="width: 40px; height: 40px; background: #4C5A2A; border-radius: 50%; border: 2px solid #ccc;"></div> <!-- Verde oliva -->
+      </div>
+    </div>
+</section>
+
+<section class="rsvp">
+    <h2>Confirmar Asistencia</h2>
+
+    <form id="form">
+        <input type="text" placeholder="Nombre" required>
+        <input type="number" placeholder="Número de invitados">
+        <button type="submit">Confirmar</button>
+    </form>
+
+    <p id="mensaje"></p>
+</section>
+
+<script src="script.js"></script>
+
+</body>
+</html>
