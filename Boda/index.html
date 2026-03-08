@@ -1,86 +1,709 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Nuestra Boda</title>
-<link rel="stylesheet" href="style.css">
-<style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Amy & Daniel</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
         @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@700&family=Helvetica:wght@400&display=swap');
-        h1, h2, h3 {
-            font-family: 'EB Garamond', 'Caslon', serif;
+        :root {
+            --vino: #6B1C1B;
+            --vino-oscuro: #4a1211;
+            --crema: #f5f0e8;
         }
-        body, p, a, li, input, button {
+        body {
+            background: #eae7df;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
             font-family: 'Helvetica', Arial, sans-serif;
+        }
+        /* Escena de la invitación: sobre cerrado / abierto */
+        .invitation-scene {
+            max-width: 420px;
+            margin: 40px auto;
+            perspective: 1200px;
+            min-height: 80vh;
+        }
+        .envelope-closed {
+            background: linear-gradient(160deg, var(--vino) 0%, var(--vino-oscuro) 100%);
+            color: #fff;
+            text-align: center;
+            padding: 48px 32px 56px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(107, 28, 27, 0.4), 0 0 0 1px rgba(255,255,255,0.1) inset;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.6s ease, box-shadow 0.3s ease;
+        }
+        .envelope-closed:hover {
+            transform: scale(1.02);
+            box-shadow: 0 24px 70px rgba(107, 28, 27, 0.45);
+        }
+        .envelope-closed::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 3px solid rgba(255,255,255,0.2);
+            border-radius: 16px;
+            pointer-events: none;
+        }
+        .envelope-closed .invitation-front h1 {
+            font-family: 'EB Garamond', 'Caslon', serif;
+            font-size: 2.6rem;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+        .envelope-closed .invitation-front h2 {
+            font-family: 'EB Garamond', 'Caslon', serif;
+            font-size: 1.8rem;
+            margin: 0.25rem 0 0;
             font-weight: 400;
         }
-        .card {
-            background: rgba(255,255,255,0.55);
-            /* Más claro para distinguir la imagen */
+        .envelope-closed .invitation-front .date {
+            font-size: 1rem;
+            margin-top: 24px;
+            letter-spacing: 3px;
+            opacity: 0.95;
+        }
+        .btn-abrir {
+            margin-top: 32px;
+            padding: 14px 32px;
+            font-family: 'EB Garamond', serif;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.6);
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background 0.3s, border-color 0.3s, transform 0.2s;
+        }
+        .btn-abrir:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: #fff;
+            transform: translateY(-2px);
+        }
+        .invitation-content {
+            display: none;
+            animation: contenidoEntra 0.8s ease forwards;
+        }
+        body.opened .envelope-closed {
+            animation: sobreAbre 0.9s ease forwards;
+            pointer-events: none;
+        }
+        body.opened .invitation-content {
+            display: block;
+        }
+        @keyframes sobreAbre {
+            0% { transform: scale(1); opacity: 1; }
+            40% { transform: scale(1.05); opacity: 1; }
+            70% { transform: rotateY(-15deg) scale(0.95); opacity: 0.7; }
+            100% { transform: rotateY(-90deg) scale(0.8); opacity: 0; visibility: hidden; }
+        }
+        @keyframes contenidoEntra {
+            0% { opacity: 0; transform: translateY(30px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        /* Contenido de la invitación */
+        .main-invite {
+            background: #fff;
+            border-radius: 32px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            overflow: hidden;
+            position: relative;
+        }
+        .main-invite .envelope {
+            background: var(--vino);
+            color: #fff;
+            text-align: center;
+            padding: 48px 0 32px 0;
+            border-radius: 0 0 32px 32px;
+        }
+        .main-invite .envelope h1 {
+            font-family: 'EB Garamond', 'Caslon', serif;
+            font-size: 2.8rem;
+            margin: 0;
+        }
+        .main-invite .envelope h2 {
+            font-family: 'EB Garamond', 'Caslon', serif;
+            font-size: 2rem;
+            margin: 0;
+        }
+        .main-invite .envelope-date {
+            font-family: 'Helvetica', Arial, sans-serif;
+            font-size: 1.1rem;
+            margin-top: 16px;
+        }
+        .photo-section {
+            background: #fff;
+            padding: 24px 0 0 0;
+            text-align: center;
+        }
+        .photo-section img {
+            width: 90%;
+            border-radius: 24px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        .song-section {
+            padding: 24px 24px 0 24px;
+            text-align: center;
+        }
+        .song-section p {
+            font-family: 'Helvetica', Arial, sans-serif;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+        .audio-player { margin: 12px 0; }
+        .blessing-section {
+            background: var(--crema);
+            padding: 32px 24px;
+            text-align: center;
+        }
+        .blessing-box {
+            max-width: 340px;
+            margin: 0 auto;
+            background: var(--vino);
+            color: #fff;
+            padding: 28px 24px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(107, 28, 27, 0.25);
+        }
+        .blessing-box p {
+            margin: 0;
+            font-family: 'Helvetica', Arial, sans-serif;
+            font-size: 1.05rem;
+            line-height: 1.5;
+            letter-spacing: 0.3px;
+        }
+        .countdown-section {
+            background: var(--crema);
+            color: var(--vino);
+            padding: 24px 24px 0 24px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .countdown-section h3,
+        .countdown-section .countdown,
+        .countdown-section div {
+            color: var(--vino);
+        }
+        .calendar-section {
+            background: var(--vino);
+            color: #fff;
+            padding: 24px 24px 0 24px;
+            text-align: center;
+        }
+        .blessing-section p, .countdown-section div {
+            font-family: 'Helvetica', Arial, sans-serif;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+        .countdown-section h3 {
+            font-family: 'EB Garamond', 'Caslon', serif;
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+        .countdown {
+            font-family: 'Helvetica', Arial, sans-serif;
+            font-size: 2rem;
+            margin: 12px 0;
+            letter-spacing: 2px;
+        }
+        .calendar-section { padding: 24px 24px 32px 24px; }
+        .calendar-section h4 {
+            font-family: 'EB Garamond', 'Caslon', serif;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            font-family: 'Helvetica', Arial, sans-serif;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        .calendar-day { padding: 4px; border-radius: 4px; }
+        .calendar-day.selected {
+            background: #fff;
+            color: var(--vino);
+            font-weight: bold;
+        }
+        .event-section, .itinerary-section, .dresscode-section, .gift-section {
+            background: #fff;
+            padding: 32px 24px;
+            text-align: center;
+        }
+        .event-section h2, .itinerary-section h2, .dresscode-section h2, .gift-section h2 {
+            font-family: 'EB Garamond', 'Caslon', serif;
+            margin-bottom: 16px;
+        }
+        .event-section div, .itinerary-section div, .dresscode-section div, .gift-section div {
+            font-family: 'Helvetica', Arial, sans-serif;
+            margin-bottom: 8px;
+        }
+        .itinerary-section div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .dresscode-section img {
+            width: 90%;
+            border-radius: 24px;
+            margin-bottom: 16px;
+        }
+        .dresscode-palette {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin: 24px 0;
+        }
+        .dresscode-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+        .gift-section {
+            background: var(--vino);
+            color: #fff;
+            padding: 32px 24px;
+        }
+        .gift-section img { width: 120px; height: 120px; }
+        .confirmation-section {
+            background: var(--vino);
+            color: #fff;
+            padding: 32px 24px;
+            text-align: center;
+        }
+        .confirmation-section h2 {
+            font-family: 'EB Garamond', 'Caslon', serif;
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+        .confirmation-section div {
+            font-family: 'Helvetica', Arial, sans-serif;
+            font-size: 1rem;
+            margin-bottom: 16px;
+        }
+        .recommendations-section {
+            background: #fff;
+            padding: 32px 24px;
+            text-align: center;
+        }
+        .recommendations-section h2 {
+            font-family: 'EB Garamond', 'Caslon', serif;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        .recommendations-section div {
+            font-family: 'Helvetica', Arial, sans-serif;
+            font-size: 1rem;
+            margin-bottom: 16px;
+        }
+        .event-section a { color: var(--vino); text-decoration: underline; }
+        .event-ceremonia {
+            position: relative;
+            min-height: 260px;
+            color: #fff;
+            padding: 28px 24px 24px;
+            text-align: center;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        .event-ceremonia .event-bg-img {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            z-index: 0;
+        }
+        .event-ceremonia .event-bg-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, rgba(107,28,27,0.75) 0%, rgba(107,28,27,0.4) 40%, transparent 70%);
+            z-index: 1;
+        }
+        .event-ceremonia .event-text {
+            position: relative;
+            z-index: 2;
+            padding-bottom: 16px;
+        }
+        .event-ceremonia a { color: rgba(255,255,255,0.95); text-decoration: underline; }
+        .event-recepcion {
+            position: relative;
+            min-height: 280px;
+            color: #333;
+            padding: 24px 24px 28px;
+            text-align: center;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .event-recepcion .event-bg-img {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            z-index: 0;
+        }
+        .event-recepcion .event-bg-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.85) 28%, transparent 55%);
+            z-index: 1;
+        }
+        .event-recepcion .event-text {
+            position: relative;
+            z-index: 2;
+            padding-top: 20px;
+        }
+        .event-recepcion h2 { color: var(--vino); }
+        .event-recepcion a { color: var(--vino); }
+        /* Modal confirmación */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.visible {
+            display: flex;
+            animation: fadeIn 0.25s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-confirmacion {
+            position: relative;
+            background: #fff;
+            border-radius: 20px;
+            max-width: 360px;
+            width: 100%;
+            padding: 28px 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        .modal-confirmacion h3 {
+            font-family: 'EB Garamond', serif;
+            color: var(--vino);
+            margin: 0 0 20px 0;
+            font-size: 1.4rem;
+            text-align: center;
+        }
+        .modal-confirmacion label {
+            display: block;
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 6px;
+        }
+        .modal-confirmacion input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 16px;
+        }
+        .modal-confirmacion input:focus {
+            outline: none;
+            border-color: var(--vino);
+        }
+        .modal-confirmacion .btn-enviar {
+            width: 100%;
+            padding: 14px;
+            background: var(--vino);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .modal-confirmacion .btn-cerrar {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #999;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .modal-confirmacion .mensaje-exito {
+            display: none;
+            text-align: center;
+            color: var(--vino);
+            font-weight: 500;
+            margin-top: 12px;
         }
     </style>
 </head>
-
 <body>
-
-<section class="hero" style="position: relative;">
-        <img src="IMG1.JPG" alt="Decoración boda" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.25;">
-        <div style="position: relative; z-index: 1;">
-            <h1>Amy & Daniel</h1>
-            <p>Nos Casamos</p>
-            <h2 id="countdown"></h2>
+    <div class="invitation-scene">
+        <!-- Vista cerrada: como un sobre / invitación cerrada -->
+        <div class="envelope-closed" id="envelope-closed" role="button" tabindex="0">
+            <div class="invitation-front">
+                <h1>Amy</h1>
+                <h2>& Daniel</h2>
+                <div class="date">25.04.2026</div>
+                <button type="button" class="btn-abrir" id="btn-abrir">Abrir invitación</button>
+            </div>
         </div>
-    </section>
 
-<section class="info" style="position: relative;">
-    <img src="IMG2.JPG" alt="Decoración evento" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.18;">
-    <div style="position: relative; z-index: 1;">
-        <h2>Detalles del Evento</h2>
-        <div class="card" style="background: rgba(255,255,255,0.75);">
-            <h3>Ceremonia Civil</h3>
-            <p>25 abril 2026</p>
-            <p>4:00 PM</p>
-            <p>Salón Jardín Real Francisco</p>
-            <a href="#">Ver mapa</a>
-        </div>
-        <div class="card" style="background: rgba(255,255,255,0.75);">
-            <h3>Recepción</h3>
-            <p>A partir de las 3:00 PM</p>
-            <p>Salón Jardín Real Francisco</p>
-            <a href="#">Ver mapa</a>
+        <!-- Contenido que se muestra al abrir -->
+        <div class="invitation-content">
+            <div class="main-invite">
+                <div class="envelope">
+                    <h1>Amy</h1>
+                    <h2>& Daniel</h2>
+                    <div class="envelope-date">25.04.2026</div>
+                </div>
+                <div class="photo-section">
+                    <img src="./IMG1.JPG" alt="Amy y Daniel">
+                </div>
+                <div class="song-section">
+                    <p>De nadie seré, solo de ti. Hasta que mis huesos se vuelvan cenizas, mi corazón deje de latir.</p>
+                    <p>Dale play a nuestra canción</p>
+                    <audio class="audio-player" controls>
+                        <source src="Justin Bieber &amp; Bruno Mars – Lucid Love ft. Harry Styles (Official Video).mp3" type="audio/mpeg">
+                        Tu navegador no soporta audio.
+                    </audio>
+                </div>
+                <div class="blessing-section">
+                    <div class="blessing-box">
+                        <p>Con la bendición de Dios y nuestros padres,<br>tenemos el honor de invitarles a nuestra boda Civil<br></p>
+                    </div>
+                </div>
+                <div class="countdown-section">
+                    <h3>abril 25, 2026</h3>
+                    <div>SABADO</div>
+                    <div class="countdown" id="countdown"></div>
+                    <div>EL GRAN DÍA</div>
+                </div>
+                <div class="calendar-section">
+                    <h4>abril 2026</h4>
+                    <div class="calendar">
+                        <div class="calendar-day">Lun</div>
+                        <div class="calendar-day">Mar</div>
+                        <div class="calendar-day">Mié</div>
+                        <div class="calendar-day">Jue</div>
+                        <div class="calendar-day">Vie</div>
+                        <div class="calendar-day">Sáb</div>
+                        <div class="calendar-day">Dom</div>
+                        <div class="calendar-day"></div>
+                        <div class="calendar-day"></div>
+                        <div class="calendar-day"></div>
+                        <div class="calendar-day"></div>
+                        <div class="calendar-day">1</div>
+                        <div class="calendar-day">2</div>
+                        <div class="calendar-day">3</div>
+                        <div class="calendar-day">4</div>
+                        <div class="calendar-day">5</div>
+                        <div class="calendar-day">6</div>
+                        <div class="calendar-day">7</div>
+                        <div class="calendar-day">8</div>
+                        <div class="calendar-day">9</div>
+                        <div class="calendar-day">10</div>
+                        <div class="calendar-day">11</div>
+                        <div class="calendar-day">12</div>
+                        <div class="calendar-day">13</div>
+                        <div class="calendar-day">14</div>
+                        <div class="calendar-day">15</div>
+                        <div class="calendar-day">16</div>
+                        <div class="calendar-day">17</div>
+                        <div class="calendar-day">18</div>
+                        <div class="calendar-day">19</div>
+                        <div class="calendar-day">20</div>
+                        <div class="calendar-day">21</div>
+                        <div class="calendar-day">22</div>
+                        <div class="calendar-day">23</div>
+                        <div class="calendar-day">24</div>
+                        <div class="calendar-day selected">25</div>
+                        <div class="calendar-day">26</div>
+                        <div class="calendar-day">27</div>
+                        <div class="calendar-day">28</div>
+                        <div class="calendar-day">29</div>
+                        <div class="calendar-day">30</div>
+                    </div>
+                </div>
+                <div class="event-ceremonia">
+                    <img src="./IMG3.JPG" alt="" class="event-bg-img">
+                    <div class="event-bg-overlay"></div>
+                    <div class="event-text">
+                        <h2>Ceremonia Civil</h2>
+                        <div>4:00 pm<br>Salón Jardín Real Francisco<br><a href="https://maps.app.goo.gl/coUyCrssPBU81Ze66" target="_blank" rel="noopener">Ver ubicación</a></div>
+                    </div>
+                </div>
+                <div class="event-recepcion">
+                    <img src="./IMG2.JPG" alt="" class="event-bg-img">
+                    <div class="event-bg-overlay"></div>
+                    <div class="event-text">
+                        <h2>Recepción</h2>
+                        <div>A partir de las 3:00 pm<br>Salón Jardín Real Francisco<br><a href="https://maps.app.goo.gl/coUyCrssPBU81Ze66" target="_blank" rel="noopener">Ver ubicación</a></div>
+                    </div>
+                </div>
+                <div class="itinerary-section">
+                    <h2>Itinerario de actividades</h2>
+                    <div>
+                        <div>3:30 pm Recepcion</div>
+                        <div>4:00 pm Boda Civil</div>
+                        <div>5:00 pm Comida</div>
+                    </div>
+                </div>
+                <div class="dresscode-section">
+                    <h2>Código de vestimenta</h2>
+                    <div class="dresscode-palette">
+                        <span class="dresscode-circle" style="background:#6B1C1B;" title="Vino"></span>
+                        <span class="dresscode-circle" style="background:#A65D4A;" title="Terracota"></span>
+                        <span class="dresscode-circle" style="background:#7C7A3B;" title="Oliva"></span>
+                        <span class="dresscode-circle" style="background:#3D4A2D;" title="Verde bosque"></span>
+                    </div>
+                    <div>Elegante<br>Con cariño les pedimos evitar prendas en color blanco y tonos similares.<br><strong>Color negro no está permitido en hombres.</strong></div>
+                </div>
+                <div class="gift-section">
+                    <h2>Sugerencia de regalo</h2>
+                    <div>El mejor regalo es tu presencia. Si deseas tener un detalle con nosotros, agradecemos <strong>efectivo en sobres</strong>, ya que la pareja comienza su vida en un nuevo hogar fuera de su lugar de origen.</div>
+                </div>
+                <div class="confirmation-section">
+                    <div style="font-size:2.2rem;margin-bottom:8px;">&#128197;</div>
+                    <h2>Confirmación de asistencia</h2>
+                    <div>Agradecemos que confirmes tu asistencia antes del 01 de abril</div>
+                    <button type="button" id="btn-confirmar" style="font-family:'Helvetica',Arial,sans-serif;font-size:1rem;padding:0.7rem 1.5rem;border:2px solid #fff;border-radius:8px;background:transparent;color:#fff;cursor:pointer;">Confirmar aquí</button>
+                </div>
+                <div class="recommendations-section">
+                    <div style="font-size:2rem;margin-bottom:8px;">&#10084;</div>
+                    <h2>Recomendaciones</h2>
+                    <div>Seguir las indicaciones del personal de la boda.<br>Ser puntual.</div>
+                    <div style="font-family:'EB Garamond',serif;font-size:1.4rem;margin:24px 0 8px 0;">Esperamos contar con su presencia</div>
+                    <div style="font-family:'EB Garamond',serif;font-size:2rem;">Muchas Gracias!</div>
+                </div>
+                <div class="photo-section" style="padding:32px 24px;">
+                    <img src="./IMG5.JPG" alt="Amy y Daniel">
+                </div>
+                <div class="photo-section" style="padding:0 24px 32px;">
+                    <img src="./IMG3.JPG" alt="Amy y Daniel">
+                </div>
+            </div>
         </div>
     </div>
-</section>
 
-<section class="dress">
-    <h2>Dress Code</h2>
-    <p>Formal / Elegante</p>
-    <p>Guía de colores:</p>
-    <p><strong>Mujeres:</strong> Burdeos, Terracota, Verde Oliva, Verde Musgo, Khaki</p>
-    <p><strong>Hombres:</strong> Todos los colores excepto negro</p>
-    <div style="display: flex; justify-content: center; margin-top: 10px;">
-      <div style="display: flex; gap: 16px;">
-        <div style="width: 40px; height: 40px; background: #6B1C1B; border-radius: 50%; border: 2px solid #ccc;"></div> <!-- Burdeos -->
-        <div style="width: 40px; height: 40px; background: #A44A3F; border-radius: 50%; border: 2px solid #ccc;"></div> <!-- Terracota -->
-        <div style="width: 40px; height: 40px; background: #B6A16A; border-radius: 50%; border: 2px solid #ccc;"></div> <!-- Khaki -->
-        <div style="width: 40px; height: 40px; background: #7C7A3B; border-radius: 50%; border: 2px solid #ccc;"></div> <!-- Verde musgo -->
-        <div style="width: 40px; height: 40px; background: #4C5A2A; border-radius: 50%; border: 2px solid #ccc;"></div> <!-- Verde oliva -->
-      </div>
+    <iframe name="iframe-envio-sheets" id="iframe-envio-sheets" style="display:none;" title="Envío a Google Sheets"></iframe>
+
+    <!-- Modal confirmación de asistencia -->
+    <div class="modal-overlay" id="modal-confirmacion" aria-hidden="true">
+        <div class="modal-confirmacion">
+            <button type="button" class="btn-cerrar" id="modal-cerrar" aria-label="Cerrar">&times;</button>
+            <h3>Confirmar asistencia</h3>
+            <form id="form-confirmacion" method="POST" action="">
+                <label for="nombre-completo">Nombre completo</label>
+                <input type="text" id="nombre-completo" name="nombre" required placeholder="Ej. María García López">
+                <label for="numero-personas">Número de personas que asistirán</label>
+                <input type="number" id="numero-personas" name="personas" min="1" max="20" value="1" required>
+                <button type="submit" class="btn-enviar">Enviar confirmación</button>
+            </form>
+            <p class="mensaje-exito" id="mensaje-exito">¡Gracias! Tu confirmación ha sido registrada.</p>
+        </div>
     </div>
-</section>
 
-<section class="rsvp">
-    <h2>Confirmar Asistencia</h2>
+    <script>
+        (function(){
+            var btn = document.getElementById('btn-abrir');
+            var envelope = document.getElementById('envelope-closed');
+            function abrir() {
+                document.body.classList.add('opened');
+            }
+            if (btn) btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); abrir(); });
+            if (envelope) {
+                envelope.addEventListener('click', abrir);
+                envelope.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(); } });
+            }
+        })();
+        var fechaBoda = new Date("April 25, 2026 15:00:00").getTime();
+        var x = setInterval(function(){
+            var el = document.getElementById("countdown");
+            if (!el) return;
+            var ahora = new Date().getTime();
+            var distancia = fechaBoda - ahora;
+            var dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
+            var horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
+            var segundos = Math.floor((distancia % (1000 * 60)) / 1000);
+            el.innerHTML = dias + " : " + horas + " : " + minutos + " : " + segundos;
+        }, 1000);
 
-    <form id="form">
-        <input type="text" placeholder="Nombre" required>
-        <input type="number" placeholder="Número de invitados">
-        <button type="submit">Confirmar</button>
-    </form>
+        // Modal confirmación + Google Sheets
+        var modal = document.getElementById('modal-confirmacion');
+        var btnConfirmar = document.getElementById('btn-confirmar');
+        var btnCerrar = document.getElementById('modal-cerrar');
+        var formConfirmacion = document.getElementById('form-confirmacion');
+        var mensajeExito = document.getElementById('mensaje-exito');
+        // URL de la hoja BODA: https://docs.google.com/spreadsheets/d/1BOR5lSyPNPMUS0XdeO-z1H6Wzp_5Gw5fFzbyC48qBW4/edit
+        // Pega aquí la URL de Apps Script (Implementar > Aplicación web), no la de la hoja. Ver GoogleSheets-Script.js
+        var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxDSglkHybJNPKdiJ5eojTUNNLZhmJeTq26ofNEh1rnz8veDuYm9IVEKKzdVziMuaaGGQ/exec';
 
-    <p id="mensaje"></p>
-</section>
+        function abrirModal() {
+            if (modal) {
+                modal.classList.add('visible');
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        function cerrarModal() {
+            if (modal) {
+                modal.classList.remove('visible');
+                modal.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+        }
+        if (btnConfirmar) btnConfirmar.addEventListener('click', abrirModal);
+        if (btnCerrar) btnCerrar.addEventListener('click', cerrarModal);
+        if (modal) modal.addEventListener('click', function(e) { if (e.target === modal) cerrarModal(); });
 
-<script src="script.js"></script>
+        if (formConfirmacion) {
+            formConfirmacion.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var nombre = document.getElementById('nombre-completo').value.trim();
+                var personas = document.getElementById('numero-personas').value;
 
+                if (GOOGLE_SCRIPT_URL) {
+                    formConfirmacion.action = GOOGLE_SCRIPT_URL;
+                    formConfirmacion.target = 'iframe-envio-sheets';
+                    formConfirmacion.style.display = 'none';
+                    if (mensajeExito) mensajeExito.style.display = 'block';
+                    setTimeout(function() {
+                        formConfirmacion.submit();
+                        setTimeout(cerrarModal, 2000);
+                    }, 100);
+                } else {
+                    console.log('Para guardar en Google Sheets: configura GOOGLE_SCRIPT_URL con la URL de tu Apps Script. Datos:', { nombre: nombre, personas: personas });
+                    formConfirmacion.style.display = 'none';
+                    if (mensajeExito) mensajeExito.style.display = 'block';
+                    setTimeout(cerrarModal, 2000);
+                }
+            });
+        }
+    </script>
 </body>
 </html>
