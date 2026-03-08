@@ -768,12 +768,13 @@
         </div>
     </div>
 
-    <!-- Modal confirmación: nombre y cantidad de personas -->
+    <!-- Modal confirmación: nombre y cantidad → Google Sheet (gratis) -->
+    <iframe name="iframe-respuesta-confirmacion" id="iframe-respuesta-confirmacion" style="display:none;width:0;height:0;border:0;"></iframe>
     <div class="modal-overlay" id="modal-confirmacion" aria-hidden="true">
         <div class="modal-confirmacion">
             <button type="button" class="btn-cerrar" id="modal-cerrar" aria-label="Cerrar">&times;</button>
             <h3>Confirmar asistencia</h3>
-            <form id="form-confirmacion">
+            <form id="form-confirmacion" method="post" target="iframe-respuesta-confirmacion">
                 <label for="confirmar-nombre">Nombre de la persona</label>
                 <input type="text" id="confirmar-nombre" name="nombre" required placeholder="Tu nombre" autocomplete="name">
                 <label for="confirmar-cantidad">Cantidad de personas</label>
@@ -815,16 +816,15 @@
             el.innerHTML = dias + " : " + horas + " : " + minutos + " : " + segundos;
         }, 1000);
 
-        // Modal confirmación: nombre y cantidad → Azure Function → Azure SQL
+        // Modal confirmación: envía a Google Sheets (gratis). Ver CONFIRMACION-A-EXCEL.md
         var modal = document.getElementById('modal-confirmacion');
         var btnConfirmar = document.getElementById('btn-confirmar');
         var btnCerrar = document.getElementById('modal-cerrar');
         var formConfirmacion = document.getElementById('form-confirmacion');
         var mensajeExito = document.getElementById('mensaje-exito');
         var mensajeError = document.getElementById('mensaje-error');
-        // PON AQUÍ LA URL de tu Azure Function después de desplegarla (ej: https://NOMBRE_DE_TU_APP.azurewebsites.net/RegistroConfirmacion)
-        // Si no está desplegada o la URL es incorrecta, saldrá "No se pudo conectar".
-        var CONFIRMACION_API_URL = 'https://boda-amy-dany-awgtbdb0ejdda8cd.mexicocentral-01.azurewebsites.net/api/RegistroConfirmacion';
+        // Pega aquí la URL de tu Apps Script (Implementar → Aplicación web). Ver CONFIRMACION-A-EXCEL.md
+        var GOOGLE_SCRIPT_URL = '';
 
         function abrirModal() {
             if (modal) {
@@ -845,55 +845,21 @@
         }
         if (formConfirmacion) {
             formConfirmacion.addEventListener('submit', function(e) {
-                e.preventDefault();
                 var nombre = document.getElementById('confirmar-nombre').value.trim();
                 var cantidad = document.getElementById('confirmar-cantidad').value;
-                if (!nombre || !cantidad) return;
-                var btnEnviar = formConfirmacion.querySelector('button[type="submit"]');
-                if (btnEnviar) { btnEnviar.disabled = true; btnEnviar.textContent = 'Enviando…'; }
-                if (mensajeError) { mensajeError.style.display = 'none'; mensajeError.textContent = ''; }
-
-                if (CONFIRMACION_API_URL.indexOf('tu-app') !== -1) {
+                if (!nombre || !cantidad) { e.preventDefault(); return; }
+                if (!GOOGLE_SCRIPT_URL) {
+                    e.preventDefault();
                     if (mensajeError) {
-                        mensajeError.textContent = 'Falta configurar la URL de la API. En index.html cambia CONFIRMACION_API_URL por la URL de tu Azure Function.';
+                        mensajeError.textContent = 'Falta la URL de Google. Abre CONFIRMACION-A-EXCEL.md y pon GOOGLE_SCRIPT_URL en index.html.';
                         mensajeError.style.display = 'block';
                     }
-                    if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.textContent = 'Enviar'; }
                     return;
                 }
-
-                fetch(CONFIRMACION_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nombre: nombre, cantidad: parseInt(cantidad, 10) })
-                })
-                .then(function(r) {
-                    return r.text().then(function(text) {
-                        var data = {};
-                        try { data = JSON.parse(text); } catch (_) {}
-                        return { ok: r.ok, data: data, status: r.status };
-                    });
-                })
-                .then(function(result) {
-                    if (result.ok) {
-                        formConfirmacion.classList.add('oculto');
-                        if (mensajeExito) mensajeExito.classList.add('visible');
-                        setTimeout(cerrarModal, 2000);
-                    } else {
-                        if (mensajeError) {
-                            mensajeError.textContent = result.data && result.data.error ? result.data.error : 'Error ' + (result.status || '') + '. Intenta de nuevo.';
-                            mensajeError.style.display = 'block';
-                        }
-                        if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.textContent = 'Enviar'; }
-                    }
-                })
-                .catch(function(err) {
-                    if (mensajeError) {
-                        mensajeError.textContent = 'No se pudo conectar. Comprueba: 1) URL de la API en index.html (CONFIRMACION_API_URL), 2) CORS en Azure (permitir tu dominio o *), 3) que la Function esté desplegada.';
-                        mensajeError.style.display = 'block';
-                    }
-                    if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.textContent = 'Enviar'; }
-                });
+                formConfirmacion.action = GOOGLE_SCRIPT_URL;
+                formConfirmacion.classList.add('oculto');
+                if (mensajeExito) mensajeExito.classList.add('visible');
+                setTimeout(cerrarModal, 2500);
             });
         }
         if (btnConfirmar) btnConfirmar.addEventListener('click', abrirModal);
