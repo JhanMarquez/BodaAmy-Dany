@@ -823,8 +823,8 @@
         var formConfirmacion = document.getElementById('form-confirmacion');
         var mensajeExito = document.getElementById('mensaje-exito');
         var mensajeError = document.getElementById('mensaje-error');
-        // Pega aquí la URL de tu Apps Script (Implementar → Aplicación web). Ver CONFIRMACION-A-EXCEL.md
-        var GOOGLE_SCRIPT_URL = '';
+        // Pega aquí la URL que te da Google al desplegar (Implementar → Aplicación web). Ejemplo: 'https://script.google.com/macros/s/AKfycbz.../exec'
+        var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSFbTpTWHnDol6UaSzwf9n2XE0QmJYJNEX6LtHsR5mbXEVE1cIr310dZAJQbe7HfeeOw/exec';
 
         function abrirModal() {
             if (modal) {
@@ -848,10 +848,10 @@
                 var nombre = document.getElementById('confirmar-nombre').value.trim();
                 var cantidad = document.getElementById('confirmar-cantidad').value;
                 if (!nombre || !cantidad) { e.preventDefault(); return; }
-                if (!GOOGLE_SCRIPT_URL) {
+                if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.indexOf('TU_ID_AQUI') !== -1) {
                     e.preventDefault();
                     if (mensajeError) {
-                        mensajeError.textContent = 'Falta la URL de Google. Abre CONFIRMACION-A-EXCEL.md y pon GOOGLE_SCRIPT_URL en index.html.';
+                        mensajeError.textContent = 'Pon en index.html (busca GOOGLE_SCRIPT_URL) la URL de tu Apps Script. Pasos en CONFIRMACION-A-EXCEL.md.';
                         mensajeError.style.display = 'block';
                     }
                     return;

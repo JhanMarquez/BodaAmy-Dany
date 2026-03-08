@@ -23,19 +23,34 @@ Si usas **Google Sheets** (gratis), en 5 minutos lo tienes guardando en una hoja
 
 ```javascript
 function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  e = e || {};
   var params = e.parameter || {};
-  var nombre = params.nombre || '';
+  if (!params.nombre && e.postData && e.postData.contents) {
+    var body = e.postData.contents;
+    body.split('&').forEach(function(pair) {
+      var kv = pair.split('=');
+      if (kv.length === 2) params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1].replace(/\+/g, ' '));
+    });
+  }
+  var nombre = (params.nombre || '').trim();
   var cantidad = params.cantidad || '';
+
+  var libro = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = libro.getSheets()[0];
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(['Fecha', 'Nombre', 'Cantidad']);
+  }
   if (nombre) {
     sheet.appendRow([new Date(), nombre, cantidad]);
+    SpreadsheetApp.flush();
   }
   return ContentService.createTextOutput(JSON.stringify({ ok: true }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 ```
 
-3. Guarda el proyecto (Ctrl+S o el icono de guardar). Arriba donde dice "Sin título", pon por ejemplo "Confirmaciones Boda".
+3. Guarda el proyecto (Ctrl+S). Arriba donde dice "Sin título", pon por ejemplo "Confirmaciones Boda".
+4. **Si ya tenías el script desplegado:** ve a **Implementar** → **Gestionar implementaciones** → el lápiz (Editar) de tu implementación → **Versión: Nueva versión** → **Implementar**. Así se usa el código nuevo.
 
 ---
 
