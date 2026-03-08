@@ -11,6 +11,7 @@
             --vino: #6B1C1B;
             --vino-oscuro: #4a1211;
             --crema: #f5f0e8;
+            --hueso: #f2ede5;
         }
         body {
             background: var(--vino);
@@ -32,16 +33,16 @@
             padding: 24px 0;
         }
         .envelope-closed {
-            background: var(--vino);
-            color: #fff;
+            background: var(--hueso);
+            color: var(--vino);
             text-align: center;
             padding: 52px 36px 48px;
             border-radius: 4px;
-            box-shadow: 0 16px 48px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.4);
             position: relative;
             cursor: pointer;
             transition: transform 0.4s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(107,28,27,0.15);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -79,7 +80,7 @@
             margin: 0 auto;
             border-left: 50% solid transparent;
             border-right: 50% solid transparent;
-            border-top: 36px solid var(--vino);
+            border-top: 36px solid var(--hueso);
             pointer-events: none;
         }
         .envelope-closed::after {
@@ -89,7 +90,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            border: 2px solid rgba(255,255,255,0.1);
+            border: 2px solid rgba(107,28,27,0.12);
             border-radius: 4px;
             pointer-events: none;
         }
@@ -126,12 +127,12 @@
             font-size: 0.8rem;
             font-weight: 600;
             letter-spacing: 0.5px;
-            color: rgba(255,255,255,0.95);
+            color: var(--hueso);
             background: radial-gradient(ellipse 70% 60% at 50% 40%, #6B1C1B, #4a1211 50%, #3d0f0e);
             border: none;
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.12), inset 0 -2px 6px rgba(0,0,0,0.35);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.35), inset 0 2px 4px rgba(255,255,255,0.12), inset 0 -2px 6px rgba(0,0,0,0.35);
             transition: transform 0.25s ease, box-shadow 0.25s ease;
             display: inline-flex;
             align-items: center;
@@ -141,7 +142,7 @@
         }
         .btn-abrir:hover {
             transform: scale(1.08);
-            box-shadow: 0 6px 22px rgba(0,0,0,0.45), inset 0 2px 4px rgba(255,255,255,0.18);
+            box-shadow: 0 6px 22px rgba(0,0,0,0.45), inset 0 2px 4px rgba(255,255,255,0.2);
         }
         .invitation-content {
             display: none;
@@ -190,7 +191,7 @@
         }
         .main-invite .envelope {
             background: var(--vino);
-            color: #fff;
+            color: var(--hueso);
             text-align: center;
             padding: 48px 0 32px 0;
             border-radius: 0 0 32px 32px;
@@ -383,6 +384,17 @@
             border-radius: 50%;
             border: 3px solid #fff;
             box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+        .dresscode-icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 14px 0 10px;
+        }
+        .dresscode-icons img {
+            max-width: 80px;
+            height: auto;
+            display: block;
         }
         .gift-section {
             background: var(--vino);
@@ -607,7 +619,7 @@
                 </div>
                 <div class="countdown-section">
                     <h3>abril 25, 2026</h3>
-                    <div>SABADO</div>
+                    <div>SÁBADO</div>
                     <div class="countdown" id="countdown"></div>
                     <div>EL GRAN DÍA</div>
                 </div>
@@ -616,14 +628,14 @@
                     <div class="parents-block">
                         <div class="parents-label">Padres de la novia</div>
                         <div class="parents-names">
-                            <span>Dalia Gabriela Peralta Martinez</span>
+                            <span>Dalia Gabriela Peralta Martínez</span>
                             <span>Cesar Cuacuas Castillo</span>
                         </div>
                     </div>
                     <div class="parents-block">
                         <div class="parents-label">Padres del novio</div>
                         <div class="parents-names">
-                            <span>Lucinda Cabrera Martinez</span>
+                            <span>Lucinda Cabrera Martínez</span>
                             <span>Renel Márquez Jimenez</span>
                         </div>
                     </div>
@@ -638,8 +650,6 @@
                         <div class="calendar-day">Vie</div>
                         <div class="calendar-day">Sáb</div>
                         <div class="calendar-day">Dom</div>
-                        <div class="calendar-day"></div>
-                        <div class="calendar-day"></div>
                         <div class="calendar-day"></div>
                         <div class="calendar-day"></div>
                         <div class="calendar-day">1</div>
@@ -672,6 +682,11 @@
                         <div class="calendar-day">28</div>
                         <div class="calendar-day">29</div>
                         <div class="calendar-day">30</div>
+                        <div class="calendar-day"></div>
+                        <div class="calendar-day"></div>
+                        <div class="calendar-day"></div>
+                        <div class="calendar-day"></div>
+                        <div class="calendar-day"></div>
                     </div>
                 </div>
                 <div class="event-recepcion">
@@ -693,7 +708,7 @@
                 <div class="itinerary-section">
                     <h2>Itinerario de actividades</h2>
                     <div>
-                        <div>3:30 pm Recepcion</div>
+                        <div>3:30 pm Recepción</div>
                         <div>4:00 pm Boda Civil</div>
                         <div>5:00 pm Comida</div>
                     </div>
@@ -706,7 +721,11 @@
                         <span class="dresscode-circle" style="background:#7C7A3B;" title="Oliva"></span>
                         <span class="dresscode-circle" style="background:#3D4A2D;" title="Verde bosque"></span>
                     </div>
-                    <div>Elegante<br>Con cariño les pedimos evitar prendas en color blanco y tonos similares.<br><strong>Color negro no está permitido en hombres.</strong></div>
+                    <div>Elegante</div>
+                    <div class="dresscode-icons">
+                        <img src="ropa.png" alt="Código de vestimenta">
+                    </div>
+                    <div>Con cariño les pedimos evitar prendas en color blanco y tonos similares.<br><strong>Color negro no está permitido en hombres.</strong></div>
                 </div>
                 <div class="gift-section">
                     <h2>Sugerencia de regalo</h2>
@@ -723,13 +742,13 @@
                     <h2>Recomendaciones</h2>
                     <div>Seguir las indicaciones del personal de la boda.<br>Ser puntual.</div>
                     <div style="font-family:'EB Garamond',serif;font-size:1.4rem;margin:24px 0 8px 0;">Esperamos contar con su presencia</div>
-                    <div style="font-family:'EB Garamond',serif;font-size:2rem;">Muchas Gracias!</div>
+                    <div style="font-family:'EB Garamond',serif;font-size:2rem;">¡Muchas Gracias!</div>
                 </div>
                 <div class="photo-section" style="padding:32px 24px;">
                     <img src="./IMG5.JPG" alt="Amy y Daniel">
                 </div>
                 <div class="photo-section" style="padding:0 24px 32px;">
-                    <img src="./IMG3.JPG" alt="Amy y Daniel">
+                    <img src="./IMG4.JPG" alt="Amy y Daniel">
                 </div>
             </div>
         </div>
