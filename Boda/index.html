@@ -768,12 +768,13 @@
         </div>
     </div>
 
-    <!-- Modal confirmación: nombre y cantidad → Formspree (gratis). Ver CONFIRMACION-FORMSPREE.md -->
+    <!-- Modal confirmación: POST a Formspree en iframe (funciona en GitHub Pages). Ver CONFIRMACION-FORMSPREE.md -->
+    <iframe name="iframe-formspree-respuesta" id="iframe-formspree-respuesta" style="display:none;width:0;height:0;border:0;" title="Respuesta envío"></iframe>
     <div class="modal-overlay" id="modal-confirmacion" aria-hidden="true">
         <div class="modal-confirmacion">
             <button type="button" class="btn-cerrar" id="modal-cerrar" aria-label="Cerrar">&times;</button>
             <h3>Confirmar asistencia</h3>
-            <form id="form-confirmacion">
+            <form id="form-confirmacion" method="post" action="" target="iframe-formspree-respuesta">
                 <label for="confirmar-nombre">Nombre de la persona</label>
                 <input type="text" id="confirmar-nombre" name="nombre" required placeholder="Tu nombre" autocomplete="name">
                 <label for="confirmar-cantidad">Cantidad de personas</label>
@@ -844,42 +845,24 @@
         }
         if (formConfirmacion) {
             formConfirmacion.addEventListener('submit', function(e) {
-                e.preventDefault();
                 var nombre = document.getElementById('confirmar-nombre').value.trim();
                 var cantidad = document.getElementById('confirmar-cantidad').value;
-                if (!nombre || !cantidad) return;
+                if (!nombre || !cantidad) {
+                    e.preventDefault();
+                    return;
+                }
                 if (!FORMSPREE_ID || FORMSPREE_ID.length < 3) {
+                    e.preventDefault();
                     if (mensajeError) {
                         mensajeError.textContent = 'Pon en index.html tu FORMSPREE_ID. Pasos en CONFIRMACION-FORMSPREE.md';
                         mensajeError.style.display = 'block';
                     }
                     return;
                 }
-                var btnEnviar = formConfirmacion.querySelector('button[type="submit"]');
-                if (btnEnviar) { btnEnviar.disabled = true; btnEnviar.textContent = 'Enviando…'; }
-                fetch('https://formspree.io/f/' + FORMSPREE_ID, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ nombre: nombre, cantidad: cantidad })
-                }).then(function(r) {
-                    if (r.ok) {
-                        formConfirmacion.classList.add('oculto');
-                        if (mensajeExito) mensajeExito.classList.add('visible');
-                        setTimeout(cerrarModal, 2500);
-                    } else {
-                        if (mensajeError) {
-                            mensajeError.textContent = 'No se pudo enviar. Revisa tu FORMSPREE_ID o intenta más tarde.';
-                            mensajeError.style.display = 'block';
-                        }
-                        if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.textContent = 'Enviar'; }
-                    }
-                }).catch(function() {
-                    if (mensajeError) {
-                        mensajeError.textContent = 'Error de conexión. Intenta de nuevo.';
-                        mensajeError.style.display = 'block';
-                    }
-                    if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.textContent = 'Enviar'; }
-                });
+                formConfirmacion.action = 'https://formspree.io/f/' + FORMSPREE_ID;
+                formConfirmacion.classList.add('oculto');
+                if (mensajeExito) mensajeExito.classList.add('visible');
+                setTimeout(cerrarModal, 2500);
             });
         }
         if (btnConfirmar) btnConfirmar.addEventListener('click', abrirModal);

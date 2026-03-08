@@ -34,4 +34,6 @@ Plan gratis: **50 envíos al mes** (suele bastar para una boda).
 - Ahí ves cada envío con nombre, cantidad y fecha.
 - Puedes exportar o activar notificaciones por email en la configuración del formulario.
 
-Funciona igual en **local** y en **GitHub Pages** (misma petición desde el navegador).
+Se usa **envío por formulario POST a un iframe** (no fetch), así funciona en **local** y en **GitHub Pages** sin bloqueos.
+
+Si en Formspree tienes activada la opción de "Allow only certain domains", añade: `https://jhanmarquez.github.io`
