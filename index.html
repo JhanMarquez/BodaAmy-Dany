@@ -586,6 +586,12 @@
             font-weight: 500;
             margin-top: 12px;
         }
+        .modal-confirmacion .mensaje-exito.visible {
+            display: block;
+        }
+        .modal-confirmacion form.oculto {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -762,13 +768,20 @@
         </div>
     </div>
 
-    <!-- Modal confirmación: abre formulario de Google (las respuestas se guardan solas en tu hoja) -->
+    <!-- Modal confirmación: nombre y cantidad de personas -->
     <div class="modal-overlay" id="modal-confirmacion" aria-hidden="true">
         <div class="modal-confirmacion">
             <button type="button" class="btn-cerrar" id="modal-cerrar" aria-label="Cerrar">&times;</button>
             <h3>Confirmar asistencia</h3>
-            <p style="margin-bottom:16px;font-size:0.95rem;">Completa el formulario y se guardará automáticamente en nuestra lista.</p>
-            <a id="btn-abrir-formulario" href="#" target="_blank" rel="noopener" class="btn-enviar" style="display:inline-block;text-align:center;text-decoration:none;box-sizing:border-box;">Abrir formulario de confirmación</a>
+            <form id="form-confirmacion">
+                <label for="confirmar-nombre">Nombre de la persona</label>
+                <input type="text" id="confirmar-nombre" name="nombre" required placeholder="Tu nombre" autocomplete="name">
+                <label for="confirmar-cantidad">Cantidad de personas</label>
+                <input type="number" id="confirmar-cantidad" name="cantidad" required min="1" max="20" value="1" placeholder="1">
+                <button type="submit" class="btn-enviar">Enviar</button>
+            </form>
+            <p class="mensaje-exito" id="mensaje-exito">Gracias, hemos recibido tu confirmación.</p>
+            <p class="mensaje-error" id="mensaje-error" style="display:none;text-align:center;color:#c00;margin-top:12px;"></p>
         </div>
     </div>
 
@@ -802,23 +815,25 @@
             el.innerHTML = dias + " : " + horas + " : " + minutos + " : " + segundos;
         }, 1000);
 
-        // Modal confirmación: enlace al Formulario de Google (las respuestas van solas a la hoja)
+        // Modal confirmación: nombre y cantidad → Azure Function → Azure SQL
         var modal = document.getElementById('modal-confirmacion');
         var btnConfirmar = document.getElementById('btn-confirmar');
         var btnCerrar = document.getElementById('modal-cerrar');
-        var btnAbrirForm = document.getElementById('btn-abrir-formulario');
-        // Pega aquí la URL de tu Formulario de Google (ver instrucciones en FORMULARIO-GOOGLE.md)
-        var GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSeYourFormId/viewform';
-
-        if (btnAbrirForm && GOOGLE_FORM_URL && GOOGLE_FORM_URL.indexOf('viewform') !== -1) {
-            btnAbrirForm.href = GOOGLE_FORM_URL;
-        }
+        var formConfirmacion = document.getElementById('form-confirmacion');
+        var mensajeExito = document.getElementById('mensaje-exito');
+        var mensajeError = document.getElementById('mensaje-error');
+        // PON AQUÍ LA URL de tu Azure Function después de desplegarla (ej: https://NOMBRE_DE_TU_APP.azurewebsites.net/RegistroConfirmacion)
+        // Si no está desplegada o la URL es incorrecta, saldrá "No se pudo conectar".
+        var CONFIRMACION_API_URL = 'https://boda-amy-dany-awgtbdb0ejdda8cd.mexicocentral-01.azurewebsites.net/api/RegistroConfirmacion';
 
         function abrirModal() {
             if (modal) {
                 modal.classList.add('visible');
                 modal.setAttribute('aria-hidden', 'false');
                 document.body.style.overflow = 'hidden';
+                if (formConfirmacion) { formConfirmacion.classList.remove('oculto'); formConfirmacion.reset(); }
+                if (mensajeExito) mensajeExito.classList.remove('visible');
+                if (mensajeError) { mensajeError.style.display = 'none'; mensajeError.textContent = ''; }
             }
         }
         function cerrarModal() {
@@ -827,6 +842,59 @@
                 modal.setAttribute('aria-hidden', 'true');
                 document.body.style.overflow = '';
             }
+        }
+        if (formConfirmacion) {
+            formConfirmacion.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var nombre = document.getElementById('confirmar-nombre').value.trim();
+                var cantidad = document.getElementById('confirmar-cantidad').value;
+                if (!nombre || !cantidad) return;
+                var btnEnviar = formConfirmacion.querySelector('button[type="submit"]');
+                if (btnEnviar) { btnEnviar.disabled = true; btnEnviar.textContent = 'Enviando…'; }
+                if (mensajeError) { mensajeError.style.display = 'none'; mensajeError.textContent = ''; }
+
+                if (CONFIRMACION_API_URL.indexOf('tu-app') !== -1) {
+                    if (mensajeError) {
+                        mensajeError.textContent = 'Falta configurar la URL de la API. En index.html cambia CONFIRMACION_API_URL por la URL de tu Azure Function.';
+                        mensajeError.style.display = 'block';
+                    }
+                    if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.textContent = 'Enviar'; }
+                    return;
+                }
+
+                fetch(CONFIRMACION_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre: nombre, cantidad: parseInt(cantidad, 10) })
+                })
+                .then(function(r) {
+                    return r.text().then(function(text) {
+                        var data = {};
+                        try { data = JSON.parse(text); } catch (_) {}
+                        return { ok: r.ok, data: data, status: r.status };
+                    });
+                })
+                .then(function(result) {
+                    if (result.ok) {
+                        formConfirmacion.classList.add('oculto');
+                        if (mensajeExito) mensajeExito.classList.add('visible');
+                        setTimeout(cerrarModal, 2000);
+                    } else {
+                        if (mensajeError) {
+                            mensajeError.textContent = result.data && result.data.error ? result.data.error : 'Error ' + (result.status || '') + '. Intenta de nuevo.';
+                            mensajeError.style.display = 'block';
+                        }
+                        if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.textContent = 'Enviar'; }
+                    }
+                })
+                .catch(function(err) {
+                    if (mensajeError) {
+                        mensajeError.textContent = 'No se pudo conectar. Comprueba: 1) URL de la API en index.html (CONFIRMACION_API_URL), 2) CORS en Azure (permitir tu dominio o *), 3) que la Function esté desplegada.';
+                        mensajeError.style.display = 'block';
+                    }
+                    if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.textContent = 'Enviar'; }
+                });
+            });
         }
         if (btnConfirmar) btnConfirmar.addEventListener('click', abrirModal);
         if (btnCerrar) btnCerrar.addEventListener('click', cerrarModal);
