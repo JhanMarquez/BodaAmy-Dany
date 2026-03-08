@@ -90,24 +90,23 @@
         }
         .invitation-content {
             display: none;
-            animation: contenidoEntra 0.8s ease forwards;
+            opacity: 0;
         }
         body.opened .envelope-closed {
-            animation: sobreAbre 0.9s ease forwards;
+            animation: sobreAbre 0.5s ease forwards;
             pointer-events: none;
         }
         body.opened .invitation-content {
             display: block;
+            animation: contenidoEntra 0.5s ease 0.2s forwards;
         }
         @keyframes sobreAbre {
-            0% { transform: scale(1); opacity: 1; }
-            40% { transform: scale(1.05); opacity: 1; }
-            70% { transform: rotateY(-15deg) scale(0.95); opacity: 0.7; }
-            100% { transform: rotateY(-90deg) scale(0.8); opacity: 0; visibility: hidden; }
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.98); visibility: hidden; }
         }
         @keyframes contenidoEntra {
-            0% { opacity: 0; transform: translateY(30px) scale(0.98); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
         /* Contenido de la invitación */
         .main-invite {
@@ -486,8 +485,8 @@
                 <div class="song-section">
                     <p>De nadie seré, solo de ti. Hasta que mis huesos se vuelvan cenizas, mi corazón deje de latir.</p>
                     <p>Dale play a nuestra canción</p>
-                    <audio class="audio-player" controls>
-                        <source src="Justin Bieber &amp; Bruno Mars – Lucid Love ft. Harry Styles (Official Video).mp3" type="audio/mpeg">
+                    <audio id="audio-invitacion" class="audio-player" controls>
+                        <source src="./Justin Bieber &amp; Bruno Mars – Lucid Love ft. Harry Styles (Official Video).mp3" type="audio/mpeg">
                         Tu navegador no soporta audio.
                     </audio>
                 </div>
@@ -584,7 +583,7 @@
                 </div>
                 <div class="gift-section">
                     <h2>Sugerencia de regalo</h2>
-                    <div>El mejor regalo es tu presencia. Si deseas tener un detalle con nosotros, agradecemos <strong>efectivo en sobres</strong>, ya que la pareja comienza su vida en un nuevo hogar fuera de su lugar de origen.</div>
+                    <div>Tu presencia en nuestro día especial es el mejor regalo que podríamos recibir. Sin embargo, si deseas hacernos un obsequio, una contribución económica a nuestro futuro juntos será muy apreciada, ya que la pareja comienza su vida en un nuevo hogar fuera de su lugar de origen.</div>
                 </div>
                 <div class="confirmation-section">
                     <div style="font-size:2.2rem;margin-bottom:8px;">&#128197;</div>
@@ -616,7 +615,7 @@
         <div class="modal-confirmacion">
             <button type="button" class="btn-cerrar" id="modal-cerrar" aria-label="Cerrar">&times;</button>
             <h3>Confirmar asistencia</h3>
-            <form id="form-confirmacion" method="POST" action="">
+            <form id="form-confirmacion" method="GET" action="">
                 <label for="nombre-completo">Nombre completo</label>
                 <input type="text" id="nombre-completo" name="nombre" required placeholder="Ej. María García López">
                 <label for="numero-personas">Número de personas que asistirán</label>
@@ -631,8 +630,12 @@
         (function(){
             var btn = document.getElementById('btn-abrir');
             var envelope = document.getElementById('envelope-closed');
+            var audioInvitacion = document.getElementById('audio-invitacion');
             function abrir() {
                 document.body.classList.add('opened');
+                if (audioInvitacion) {
+                    audioInvitacion.play().catch(function(){});
+                }
             }
             if (btn) btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); abrir(); });
             if (envelope) {
@@ -681,6 +684,10 @@
         if (btnCerrar) btnCerrar.addEventListener('click', cerrarModal);
         if (modal) modal.addEventListener('click', function(e) { if (e.target === modal) cerrarModal(); });
 
+        if (formConfirmacion && GOOGLE_SCRIPT_URL) {
+            formConfirmacion.action = GOOGLE_SCRIPT_URL;
+            formConfirmacion.target = 'iframe-envio-sheets';
+        }
         if (formConfirmacion) {
             formConfirmacion.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -688,19 +695,15 @@
                 var personas = document.getElementById('numero-personas').value;
 
                 if (GOOGLE_SCRIPT_URL) {
-                    formConfirmacion.action = GOOGLE_SCRIPT_URL;
-                    formConfirmacion.target = 'iframe-envio-sheets';
                     formConfirmacion.style.display = 'none';
                     if (mensajeExito) mensajeExito.style.display = 'block';
-                    setTimeout(function() {
-                        formConfirmacion.submit();
-                        setTimeout(cerrarModal, 2000);
-                    }, 100);
+                    formConfirmacion.submit();
+                    setTimeout(cerrarModal, 2500);
                 } else {
-                    console.log('Para guardar en Google Sheets: configura GOOGLE_SCRIPT_URL con la URL de tu Apps Script. Datos:', { nombre: nombre, personas: personas });
+                    console.log('Para guardar en Google Sheets: configura GOOGLE_SCRIPT_URL. Datos:', { nombre: nombre, personas: personas });
                     formConfirmacion.style.display = 'none';
                     if (mensajeExito) mensajeExito.style.display = 'block';
-                    setTimeout(cerrarModal, 2000);
+                    setTimeout(cerrarModal, 2500);
                 }
             });
         }
