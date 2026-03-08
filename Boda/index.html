@@ -768,7 +768,8 @@
         </div>
     </div>
 
-    <!-- Modal confirmación: nombre y cantidad → Google Sheet (gratis) -->
+    <!-- Modal confirmación: nombre y cantidad → Google Sheet (gratis). Envío por GET en iframe (mismo método local y publicado). -->
+    <form id="form-envio-google" method="get" target="iframe-respuesta-confirmacion" action="" style="display:none;" aria-hidden="true"></form>
     <iframe name="iframe-respuesta-confirmacion" id="iframe-respuesta-confirmacion" style="display:none;width:0;height:0;border:0;"></iframe>
     <div class="modal-overlay" id="modal-confirmacion" aria-hidden="true">
         <div class="modal-confirmacion">
@@ -857,8 +858,14 @@
                     return;
                 }
                 var url = GOOGLE_SCRIPT_URL + '?nombre=' + encodeURIComponent(nombre) + '&cantidad=' + encodeURIComponent(cantidad);
-                var iframe = document.getElementById('iframe-respuesta-confirmacion');
-                if (iframe) iframe.src = url;
+                var formEnvio = document.getElementById('form-envio-google');
+                var iframeResp = document.getElementById('iframe-respuesta-confirmacion');
+                if (formEnvio && iframeResp) {
+                    formEnvio.action = url;
+                    formEnvio.submit();
+                } else {
+                    (new Image()).src = url;
+                }
                 formConfirmacion.classList.add('oculto');
                 if (mensajeExito) mensajeExito.classList.add('visible');
                 setTimeout(cerrarModal, 2500);

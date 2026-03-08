@@ -3,6 +3,9 @@
 El formulario de la invitación envía **nombre** y **cantidad de personas** a una URL.  
 Si usas **Google Sheets** (gratis), en 5 minutos lo tienes guardando en una hoja.
 
+**Por qué Apps Script y no la “Guía de inicio rápido” de la API de Sheets:**  
+La [guía oficial en JavaScript](https://developers.google.com/workspace/sheets/api/quickstart/js?hl=es-419) usa OAuth: cada usuario debe iniciar sesión con su cuenta de Google. Eso no sirve para una invitación donde los invitados solo ponen nombre y cantidad. Aquí usamos **Google Apps Script** desplegado como aplicación web: **nadie tiene que iniciar sesión**, la petición llega por GET y el script (que corre con tu cuenta) escribe en tu hoja.
+
 ---
 
 ## 1. Crear la hoja
@@ -93,8 +96,22 @@ Cuando alguien rellene el formulario y pulse Enviar, en la hoja se añadirá una
 
 ---
 
-## Si no se guarda al enviar desde la web (pero sí en local)
+## Comprobar que todo funciona
 
-1. En Apps Script: **Ejecuciones** (o "Executions", en el menú izquierdo). Ahí ves si el script se ejecutó cuando enviaste desde la invitación. Si aparece un error, copia el mensaje.
-2. Comprueba que la implementación sea **"Cualquier persona"** (Anyone), no "Cualquier persona con cuenta de Google".
-3. Prueba en ventana de incógnito para evitar caché.
+Se usa **el mismo método** en local y publicado: un formulario GET que se envía a un iframe (la URL de tu script con `?nombre=...&cantidad=...`). Así se comporta igual en ambos.
+
+- **Publicado (GitHub Pages):** debe guardar en la hoja al enviar.
+- **En local:** si abres el HTML como archivo (`file://`) a veces el navegador bloquea que el iframe cargue la URL externa. Para probar igual que en la web, sirve la carpeta con un servidor:
+  - En la carpeta **Boda** ejecuta: `npx http-server -p 8080`
+  - Abre en el navegador: `http://localhost:8080`
+  - Prueba el formulario ahí; debería guardar igual que en GitHub Pages.
+
+---
+
+## Si no guarda (ni en local ni publicado)
+
+1. **Apps Script:** revisa que el código tenga la función **doGet** (además de doPost y guardarEnHoja). Sin doGet, las peticiones GET que hace la invitación no escriben en la hoja.
+2. **Implementación:** Implementar → Gestionar implementaciones → que diga **"Cualquier persona"** (Anyone). Si pone "Solo yo" o "Cualquier persona con cuenta de Google", no funcionará desde la invitación.
+3. **Nueva versión:** si cambiaste el script, en Gestionar implementaciones → Editar → **Versión: Nueva versión** → Implementar.
+4. **Ejecuciones:** en Apps Script, menú **Ejecuciones**. Envía el formulario y mira si aparece una ejecución (y si hay error, el mensaje).
+5. Prueba en **ventana de incógnito** por si la caché o extensiones bloquean la petición.

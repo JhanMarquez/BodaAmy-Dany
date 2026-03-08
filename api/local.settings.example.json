@@ -1,0 +1,11 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "SQL_SERVER": "danielm.database.windows.net",
+    "SQL_DATABASE": "db_punto_venta",
+    "SQL_USER": "d4nielM",
+    "SQL_PASSWORD": "Hipp991109#"
+  }
+}

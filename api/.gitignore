@@ -1,0 +1,6 @@
+node_modules/
+local.settings.json
+.azure/
+publish-profile.xml
+deploy.zip
+*.PublishSettings
