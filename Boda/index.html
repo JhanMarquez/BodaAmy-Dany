@@ -14,135 +14,101 @@
             --hueso: #f2ede5;
         }
         body {
-            background: var(--hueso);
             margin: 0;
             padding: 0;
             min-height: 100vh;
+            min-height: 100dvh;
             font-family: 'Helvetica', Arial, sans-serif;
         }
-        /* Escena de la invitación: sobre cerrado / abierto */
-        .invitation-scene {
-            max-width: 420px;
-            margin: 0 auto;
-            perspective: 1200px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 24px 0;
-        }
-        .envelope-closed {
+        body:not(.opened) {
             background: var(--vino);
-            color: #fff;
-            text-align: center;
-            padding: 52px 36px 48px;
-            border-radius: 4px;
-            box-shadow: 0 16px 48px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.4s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.08);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
         }
-        /* Listón dorado */
-        .envelope-closed .envelope-ribbon {
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 118px;
-            height: 20px;
-            background: linear-gradient(180deg, #e5c76b 0%, #d4af37 25%, #b8960c 50%, #c9a227 75%, #a67c00 100%);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.5);
-            pointer-events: none;
+        body.opened {
+            background: var(--hueso);
         }
-        .envelope-closed .invitation-front {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        .invitation-scene {
             width: 100%;
+            max-width: 100%;
+            margin: 0;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            box-sizing: border-box;
         }
-        /* Solapa del sobre (triángulo superior) */
-        .envelope-closed::before {
-            content: '';
+        /* Sobre: imagen sobre2.png centrada y que se ajuste al móvil */
+        .envelope-closed {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+            box-sizing: border-box;
+        }
+        .envelope-closed .envelope-img {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            object-position: center;
+        }
+        /* Botón transparente sobre el sello (encima de todo para que reciba el toque) */
+        .envelope-closed .btn-sello {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            width: 0;
+            top: 50%;
+            left: 50%;
+            width: 28%;
+            max-width: 120px;
             height: 0;
-            margin: 0 auto;
-            border-left: 50% solid transparent;
-            border-right: 50% solid transparent;
-            border-top: 36px solid var(--vino);
-            pointer-events: none;
+            padding-bottom: 28%;
+            max-height: 120px;
+            margin: -14% 0 0 -14%;
+            min-width: 64px;
+            background: transparent;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 20;
         }
-        .envelope-closed::after {
-            content: '';
-            position: absolute;
+        /* Resplandor: detrás del botón, no bloquea toques */
+        .envelope-closed .resplandor {
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 4px;
-            pointer-events: none;
-        }
-        .envelope-closed:hover {
-            transform: scale(1.02);
-            box-shadow: 0 20px 56px rgba(0,0,0,0.3);
-        }
-        .envelope-closed .invitation-front h1 {
-            font-family: 'EB Garamond', 'Caslon', serif;
-            font-size: 2.5rem;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
             margin: 0;
-            letter-spacing: 2px;
+            padding: 0;
+            border-radius: 0;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.98) 0%, rgba(255,235,200,0.9) 35%, rgba(255,220,180,0.7) 60%, transparent 80%);
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0;
         }
-        .envelope-closed .invitation-front h2 {
-            font-family: 'EB Garamond', 'Caslon', serif;
-            font-size: 1.7rem;
-            margin: 0.25rem 0 0;
-            font-weight: 400;
+        .envelope-closed.resplandor-activo .resplandor {
+            animation: resplandorPantalla 0.7s ease-out forwards;
         }
-        .envelope-closed .invitation-front .date {
-            font-size: 0.95rem;
-            margin-top: 20px;
-            letter-spacing: 3px;
-            opacity: 0.95;
-        }
-        /* Sello (botón tipo lacre) */
-        .btn-abrir {
-            margin-top: 28px;
-            width: 100px;
-            height: 100px;
-            padding: 8px;
-            flex-shrink: 0;
-            font-family: 'EB Garamond', serif;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            color: var(--hueso);
-            background: radial-gradient(ellipse 70% 60% at 50% 40%, #6B1C1B, #4a1211 50%, #3d0f0e);
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.35), inset 0 2px 4px rgba(255,255,255,0.12), inset 0 -2px 6px rgba(0,0,0,0.35);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            line-height: 1.25;
-        }
-        .btn-abrir:hover {
-            transform: scale(1.08);
-            box-shadow: 0 6px 22px rgba(0,0,0,0.45), inset 0 2px 4px rgba(255,255,255,0.2);
+        @keyframes resplandorPantalla {
+            0% {
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 1;
+            }
         }
         .invitation-content {
             display: none;
@@ -163,9 +129,11 @@
             margin: 0 !important;
         }
         body.opened .invitation-scene {
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto;
             justify-content: flex-start;
-            padding-top: 16px;
-            padding-bottom: 24px;
+            padding: 16px 24px 24px;
             min-height: auto;
         }
         body.opened .invitation-content {
@@ -596,15 +564,11 @@
 </head>
 <body>
     <div class="invitation-scene">
-        <!-- Vista cerrada: como un sobre / invitación cerrada -->
-        <div class="envelope-closed" id="envelope-closed" role="button" tabindex="0">
-            <div class="envelope-ribbon"></div>
-            <div class="invitation-front">
-                <h1>Amy</h1>
-                <h2>& Daniel</h2>
-                <div class="date">25.04.2026</div>
-                <button type="button" class="btn-abrir" id="btn-abrir">Abrir invitación</button>
-            </div>
+        <!-- Vista cerrada: sobre2.png centrado, al tocar el sello se ilumina toda la pantalla -->
+        <div class="envelope-closed" id="envelope-closed">
+            <img class="envelope-img" src="./sobre2.png" alt="Sobre de invitación">
+            <span class="resplandor" aria-hidden="true"></span>
+            <button type="button" class="btn-sello" id="btn-abrir" aria-label="Abrir invitación"></button>
         </div>
 
         <!-- Contenido que se muestra al abrir -->
@@ -628,11 +592,11 @@
                 </div>
                 <div class="blessing-section">
                     <div class="blessing-box">
-                        <p>Con la bendición de Dios y nuestros padres,<br>tenemos el honor de invitarles a nuestra Boda Civil<br></p>
+                        <p>Tenemos el honor de invitarles a nuestra Boda Civil</p>
                     </div>
                 </div>
                 <div class="countdown-section">
-                    <h3>abril 25, 2026</h3>
+                    <h3>abril 25, 2026</h3> 
                     <div>SÁBADO</div>
                     <div class="countdown" id="countdown"></div>
                     <div>EL GRAN DÍA</div>
@@ -722,7 +686,7 @@
                 <div class="itinerary-section">
                     <h2>Itinerario de actividades</h2>
                     <div>
-                        <div>3:30 pm Recepción</div>
+                        <div>3:00 pm Recepción</div>
                         <div>4:00 pm Boda Civil</div>
                         <div>5:00 pm Comida</div>
                     </div>
@@ -743,7 +707,7 @@
                 </div>
                 <div class="gift-section">
                     <h2>Sugerencia de regalo</h2>
-                    <div>Tu presencia en nuestro día especial es el mejor regalo que podríamos recibir. Sin embargo, si deseas hacernos un obsequio, una contribución económica a nuestro futuro juntos será muy apreciada, ya que la pareja comienza su vida en un nuevo hogar fuera de su lugar de origen.</div>
+                    <div>Tu presencia en nuestro día especial es el mejor regalo que podríamos recibir. Sin embargo, si deseas tener un detalle con nosotros, una contribución económica para nuestro nuevo hogar será muy apreciada.</div>
                 </div>
                 <div class="confirmation-section">
                     <div style="font-size:2.2rem;margin-bottom:8px;">&#128197;</div>
@@ -790,6 +754,7 @@
         (function(){
             var btn = document.getElementById('btn-abrir');
             var envelope = document.getElementById('envelope-closed');
+            var resplandorEl = envelope ? envelope.querySelector('.resplandor') : null;
             var audioInvitacion = document.getElementById('audio-invitacion');
             function abrir() {
                 document.body.classList.add('opened');
@@ -797,10 +762,34 @@
                     audioInvitacion.play().catch(function(){});
                 }
             }
-            if (btn) btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); abrir(); });
+            function onSelloClick(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!envelope || envelope.classList.contains('resplandor-activo')) return;
+                envelope.classList.add('resplandor-activo');
+                var yaAbrio = false;
+                function irInvitacion() {
+                    if (yaAbrio) return;
+                    yaAbrio = true;
+                    if (resplandorEl) envelope.classList.remove('resplandor-activo');
+                    abrir();
+                }
+                if (resplandorEl) {
+                    resplandorEl.addEventListener('animationend', irInvitacion);
+                    setTimeout(irInvitacion, 750);
+                } else {
+                    abrir();
+                }
+            }
+            if (btn) {
+                btn.addEventListener('click', onSelloClick);
+                btn.addEventListener('touchend', function(e){ e.preventDefault(); onSelloClick(e); }, { passive: false });
+                btn.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelloClick(e); } });
+            }
             if (envelope) {
-                envelope.addEventListener('click', abrir);
-                envelope.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(); } });
+                envelope.addEventListener('click', onSelloClick);
+                envelope.addEventListener('touchend', function(e){ e.preventDefault(); onSelloClick(e); }, { passive: false });
+                envelope.style.cursor = 'pointer';
             }
         })();
         var fechaBoda = new Date("April 25, 2026 15:00:00").getTime();
